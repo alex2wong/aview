@@ -22,7 +22,7 @@ export default {
   props: {
     value: {
       type: [Number, String],
-      default: '',
+      default: 1,
     },
     unit: {
       type: String,
@@ -41,12 +41,14 @@ export default {
   },
 
   methods: {
+    /** @change only triggered by user change, not by changed model.*/
     onChange(evt) {
       console.warn(`target.value: ${evt.target.value}`);
       const ridOfComma = evt.target.value.replace(/,/g, '');
       const newVal = this.unit === '%'? parseFloat(ridOfComma)/100 : parseFloat(ridOfComma);
       console.warn(`submit newVal : ${newVal}`);
       this.$emit('input', newVal);
+      this.$emit('change');
     }
   }
 }

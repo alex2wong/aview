@@ -1,5 +1,5 @@
 <template>
-  <a href="#" class="a-button" @click="$emit('click')">
+  <a href="#" class="a-button " @click="$emit('click')">
     <slot></slot>
   </a>
 </template>
@@ -16,6 +16,9 @@
   .a-button:hover {
     color: #eee;
     background: #333;
+  }
+  .primary {
+    background: #61bd12;
   }
 
 </style>

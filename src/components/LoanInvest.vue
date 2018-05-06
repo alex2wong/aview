@@ -5,7 +5,8 @@
     <base-input type="text" v-model.number="totalMonth" :unit="'months'" @change="calc">total Month:</base-input>
     <base-input type="text" v-model.number="yearRate" :unit="'%'" @change="calc">Loan Year Rate:</base-input> 
     <base-input type="text" v-model.number="expected_YearEarn" :unit="'%'" @change="calc">Expected Earn Rate:</base-input>
-    <base-button @click="calc">Calculate!</base-button>
+    <base-button @click="calc">Calculate!</base-button> <br>
+    <label>Months:</label><base-slider v-model="totalMonth" :theme="'light'" @input="calc"></base-slider>
     <p class="text--bold">
       If you can borrow Cash from bank, then invest the money.. <br><br>
       After {{totalMonth}} months ... <br>
@@ -13,6 +14,7 @@
       Total Loan fee: <span style="color: red">{{Math.round(totalPay).toLocaleString()}}</span> , <br>
       Invest earned: <span style="color: green">{{Math.round(totalEarning).toLocaleString()}}</span> , 
       Absolute Earned: <span class="text--bolder">{{Math.round(totalEarning - totalPay).toLocaleString()}}</span></p>
+      <br> <b>Longer the time, More you earn !</b>
   </div>
 </template>
 
@@ -36,11 +38,13 @@
 <script >
 import { default as BaseInput } from './BaseInput.vue';
 import { default as BaseButton } from './BaseButton.vue';
+import { default as BaseSlider } from './BaseSlider.vue';
 
 export default {
   components: {
     BaseInput,
     BaseButton,
+    BaseSlider,
   },
   props: {
     title: {
@@ -51,10 +55,10 @@ export default {
 
   data () {
     return {
-      totalLoan: 80000,
+      totalLoan: 200000,
       totalMonth: 36,
       yearRate: 0.033,
-      expected_YearEarn: 0.10,
+      expected_YearEarn: 0.08,
       totalEarning: 0,
       cashLeft: this.$props.totalLoan,
     };
