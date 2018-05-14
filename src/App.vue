@@ -2,16 +2,19 @@
   <div id="app">
     <h2> Loan Calculator </h2>
     <loan-invest></loan-invest>
+    <chart-demo></chart-demo>
   </div>
 </template>
 
 <script>
 import LoanInvest from './components/LoanInvest';
+import ChartDemo from './components/demo/ChartDemo.vue';
 
 export default {
   name: 'App',
   components: {
-    LoanInvest
+    LoanInvest,
+    ChartDemo,
   }
 }
 </script>
