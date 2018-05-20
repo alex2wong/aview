@@ -2,6 +2,11 @@ export default class Util {
     static deepClone(obj) {
         let cloned = {};
         if (typeof obj !== 'object') return null;
+        if (Array.isArray(obj)) {
+            return obj.map((ele) => {
+                return this.deepClone(ele);
+            });
+        }
         for (let k in obj) {
             if (obj.hasOwnProperty(k) && typeof obj[k] !== 'object') {
                 cloned[k] = obj[k];

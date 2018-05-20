@@ -36,6 +36,7 @@ export default{
   watch: {
     datasets() {
       this.chart.data.datasets = this.datasets;
+      this.chart.update();
       console.warn(`updating chart datasets...re-rendering.`);
     }
   },
