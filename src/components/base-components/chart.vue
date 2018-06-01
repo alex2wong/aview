@@ -1,5 +1,5 @@
 <template>
-  <canvas :ref="chartId" :id="chartId" :class="['a-chart']" :height="height"></canvas>
+  <canvas :id="chartId" :class="['a-chart']" :height="height"></canvas>
 </template>
 <style>
   .a-chart {
@@ -10,17 +10,26 @@
 <script>
 import { Chart }  from 'chart.js';
 
-export default{
+export default {
   props: {
     type: {
       type: String,
       default: 'bar',
+    },
+    labels: {
+      type: Array,
+      default () {
+        return [];
+      }
     },
     datasets: {
       type: Array,
     },
     chartOpt: {
       type: Object,
+      default () {
+        return {};
+      }
     },
     height: {
       type: Number,
@@ -45,9 +54,11 @@ export default{
   },
   mounted() {
     const chartCont = this.$refs[this.chartId];
+    console.warn(`debug: chart.vue..mounted.`);
     this.chart = new Chart(this.chartId, {
       type: this.type,
       data: {
+        labels: this.labels,
         datasets: this.datasets,
       },
       options: this.chartOpt,
