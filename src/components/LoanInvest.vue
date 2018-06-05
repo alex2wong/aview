@@ -89,7 +89,7 @@ export default {
         // console.warn(`after month ${i+1}, left ${this.cashLeft.toFixed(0)}, 
         //   monthEarning: ${monthEarning.toFixed(0)}, totalEarning: ${this.totalEarning.toFixed(0)}`);
       }
-      console.warn(`calculate loan and invest done`);
+      // console.warn(`calculate loan and invest done`);
       return this.totalEarning;
     },
   }

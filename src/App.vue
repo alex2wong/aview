@@ -2,6 +2,7 @@
   <div id="app">
     <h2> Loan Calculator </h2>
     <loan-invest></loan-invest>
+    <hr>
     <chart-stock></chart-stock>
     <!-- <chart-demo></chart-demo> -->
   </div>
@@ -29,6 +30,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin: 40px 10px;
 }
 </style>

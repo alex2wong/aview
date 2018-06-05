@@ -32,7 +32,7 @@ export default {
 
   computed: {
     formatVal () {
-      console.warn(`value changed by user..: ${this.value}`);
+      // console.warn(`value changed by user..: ${this.value}`);
       if (this.unit === '%') {
         return (this.value * 100).toFixed(2);
       }

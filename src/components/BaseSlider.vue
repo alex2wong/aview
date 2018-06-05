@@ -4,7 +4,7 @@
        :style="{'width': sliderSize, 'transform': vertical? `rotateZ(-90deg) translateX(${translateX})`:''}">
       <input type="range" style="width:100%;"
         :name="uuid" :ref="uuid" id="" :value="value" :min="min" :max="max"
-        @input="onChange($event)">
+        @input="onInput($event)" @change="onChange($event)">
     </div>
   </div>
 </template>
@@ -112,13 +112,21 @@ export default {
   },
 
   methods: {
+    onInput(evt) {
+      const newVal = this.changeStyle();
+      this.$emit('input', newVal);
+    },
     onChange(evt) {
+     const newVal = this.changeStyle();
+      this.$emit('change');
+    },
+    changeStyle() {
       const inputRange = this.$refs[this.uuid];
       const newVal = Number(inputRange.value);
       const ratio = (newVal - this.min) * 100 / (this.max - this.min);
       inputRange.style.backgroundSize = `${ratio}% 100%`;
-      this.$emit('input', newVal);
-    },
+      return newVal;
+    }
   },
 }
 </script>
