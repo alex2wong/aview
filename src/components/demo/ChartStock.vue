@@ -2,19 +2,20 @@
   <div>
     <h3>定投计算器v0.1</h3>
     <chart
-    :labels="labels" 
-    :datasets="dataSets" 
-    :chart-opt="chartOpts"></chart>
+    ref="stock1"
+    chart-id="stock1"
+    :chart-data="dataSets"
+    :chart-config="chartOpts"></chart>
     <label for="">定投间隔 {{intervalDate}}（天）</label>
     <base-slider :min="7" :max="28" v-model="intervalDate" @change="calcInvest"></base-slider>
     <br>
     <label for="">定投总期数 {{intervalCnt}} 期</label>
-    <base-slider :min="1" :max="200" v-model="intervalCnt" @change="calcInvest"></base-slider> 
+    <base-slider :min="1" :max="200" v-model="intervalCnt" @change="calcInvest"></base-slider>
     <br>
     <div class="result">
-      startDate: {{ startDate }} , input <b>￥{{ investVal }}</b> each {{ intervalDate }} days, 
+      startDate: {{ startDate }} , input <b>￥{{ investVal }}</b> each {{ intervalDate }} days,
       totalInvet: <span>{{ res.totalInvest }}</span> CNY, <br>
-      totalMoney at end: <span>{{ res.totalMoney.toFixed(2) }}</span> CNY, 
+      totalMoney at end: <span>{{ res.totalMoney.toFixed(2) }}</span> CNY,
       totalEarnRate: <span>{{ res.totalEarnRate.toFixed(4)*100 }}</span>%
     </div>
    </div>
@@ -26,7 +27,7 @@
   }
 </style>
 <script >
-import { default as Chart } from '../base-components/chart.vue';
+import { default as Chart } from '../base-components/achart.vue';
 import { default as BaseSlider } from '../BaseSlider';
 import { stockData } from './stockData';
 import { dingInvest, getPrice, getFloatRate } from './dingInvest.service';
@@ -37,7 +38,7 @@ export default {
     BaseSlider,
   },
   props: {
-    
+
   },
   data () {
     return {
@@ -58,65 +59,43 @@ export default {
       startDate: '2012-4-30',
     };
   },
-  beforeMount () { 
-    const { data, stockCode } = this.stock2line();
-    this.dataSets.push(
-      {
-        data,
-        type: 'line',
-        label: stockCode,
-        fill: true,
-        pointRadius: 0,
-        borderWidth: 2,
-        borderColor: 'rgba(203, 47, 130, 0.7)',
-        // backgroundColor: 'rgba(203, 47, 130, 0.7)',
-      });
+  beforeMount () {
+    const { dataProvider, stockCode } = this.stock2line();
+    this.dataSets = dataProvider;
     this.chartOpts = {
-      title: {
-        display: true,
-        text: `Day K lines of Stock ${stockCode}`,
-      },
-      tooltips: {
-        intersect: false,
-        mode: 'index',
-      },
-      onHover: (evt, msg) => {
-        if (msg.length > 0) {
-          // console.warn(`debug: hover index ${msg[0]._index}`);
-        }
-      },
-      onClick: (ctx, msg) => {
-        if (msg.length > 0) {
-          console.warn(`debug: clicked index ${msg[0]._index}`);
-        }
-      },
-      scales: {
-        xAxes: [{
-            display: true,
-            scaleLabel: {
-              display: true,
-              labelString: 'Dates',
-            },
-          }
-        ],
-        yAxes: [{
-          display: true,
-          scaleLabel: {
-            display: true,
-            labelString: 'Price (CNY)',
-          },
-        }]
-      },
+      type: 'serial',
+      categoryField: 'date',
+      labelText: '[[value]]￥',
+      // clickGraphItem: handleClickItem,
+      graphs: [
+        {
+          type: 'line',
+          valueField: 'price',
+          chartCursor: {},
+          valueAxes: [{ title: 'Event Counts' }],
+        },
+      ],
     };
   },
   mounted() {
     // start test dingInvest.
     this.res = dingInvest(this.stockData, this.intervalDate, this.intervalCnt, this.investVal, 0, this.startDate);
+    console.warn(`mounted: ${this.$refs.stock1.chart}`);
+    this.$refs.stock1.chart.addListener('rollOverGraphItem', handler);
+    // this.$refs.stock1.chart.addListener('rollOverGraph', handler);
+    this.$refs.stock1.chart.addListener('clickGraphItem', handler);
+    var handler = (data) => {
+      const dataItem = data.dataItem;
+      console.warn(`Clicked item: ${dataItem.title}`);
+      // get clicked x date, then recalculate.
+      this.startDate = dataItem.title;
+      this.calcInvest();
+    };
   },
 
   methods: {
     genInvestChart(investDateArr) {
-      let dataSet = { 
+      let dataSet = {
         data: [],
         type: 'scatter',
         label: 'invest dates',
@@ -144,6 +123,7 @@ export default {
       let dayPrices = [];
       let xLabels = [];
       let index = 0;
+      let dataProvider = [];
       for (var code in this.stockData) {
         const dayKs = this.stockData[code];
         console.warn(`got len: ${dayKs.length} data.`);
@@ -152,6 +132,10 @@ export default {
             dayPrices.push(Number(info[1]));
             xLabels.push((info[0].split('-')
               .join('-')));
+            dataProvider.push({
+              date: info[0],
+              price: Number(info[1]),
+            });
           }
           index += 1;
         });
@@ -159,7 +143,7 @@ export default {
       this.labels = xLabels;
       console.warn(`got ${dayPrices.length} days stock price for ${code} `);
       return {
-        data: dayPrices,
+        dataProvider,
         stockCode: code,
       };
     },

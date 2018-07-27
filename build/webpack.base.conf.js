@@ -27,6 +27,7 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      'amcharts3': resolve('node_modules/amcharts3/amcharts'),
     }
   },
   module: {

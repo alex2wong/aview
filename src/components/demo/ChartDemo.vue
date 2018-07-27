@@ -6,7 +6,7 @@
     <label for="searchRad">HeatMap Search Radius:</label>
     <input type="number" v-model="radius" name="searchRad" id="searchRad" @change='updateDensity'>
     <span v-show="calculating"> calculating...</span>
-    <chart :datasets="heatData" :chart-opt="chartOpts" :type="'scatter'"></chart>
+    <!-- <chart :datasets="heatData" :chart-opt="chartOpts" :type="'scatter'"></chart> -->
   </div>
 </template>
 <style scoped>
@@ -21,7 +21,7 @@
 </style>
 <script>
 import { default as Util } from '../util';
-import { default as Chart } from '../base-components/chart.vue';
+import { default as Chart } from '../base-components/achart.vue';
 import { HeatMap } from './heatmap';
 // import * as Noise from '../noise';
 
@@ -63,7 +63,7 @@ export default {
       label: 'random points',
       data: randPoints,
       pointBackgroundColor: 'rgba(255, 73, 73, .4)',
-    };    
+    };
 
     this.points.push(pointDataset);
     this.heatData.push(heatMapDataset);
@@ -109,7 +109,7 @@ export default {
       };
     },
     adjustWidth() {
-      
+
     },
   },
 
